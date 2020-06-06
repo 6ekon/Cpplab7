@@ -50,10 +50,10 @@ void Print()
 {
 	double buff[100];
 	int i = 0;
-	cout << "Ваша очередь: \n | ";
+	cout << "Ваша очередь: \n  ";
 	while (!Numbers.empty())
 	{
-		cout << Numbers.front() << " | ";
+		cout << Numbers.front() << "  ";
 		buff[i] = Numbers.front();
 		Numbers.pop();
 		i++;
