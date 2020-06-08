@@ -270,7 +270,7 @@ struct Adding
 				for (Manip* next = head; next; next = next->next)
 				{
 					if (next->next && next->data > next->next->data)
-						std::swap(next->data, next->next->data);
+						swap(next->data, next->next->data);
 				}
 			}
 	}
@@ -281,11 +281,11 @@ struct Adding
 		{
 			for (Manip* next = head; next; next = next->next)
 			{
-				std::cout << std::setw(5) << next->data << " ";
+				cout << next->data << " ";
 			}
-			std::cout << std::endl;
+			cout << endl;
 		}
-		else std::cout << "NULL" << std::endl;
+		else cout << "NULL" << endl;
 	}
 };
 
