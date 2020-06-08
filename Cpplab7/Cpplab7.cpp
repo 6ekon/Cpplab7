@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <queue>
 #include <stack>
+#include <iomanip>
 #include <time.h>
 using namespace std;
 
@@ -125,12 +126,200 @@ void task2()
 	}
 }
 
+
+struct Manip
+{
+	double data = 0;
+	Manip* next = nullptr;
+};
+
+struct Adding
+{
+	Manip* head = nullptr, * tail = nullptr;
+	size_t count = 0;
+
+	void New(double value)
+	{
+		if (!head)
+		{
+			head = new Manip();
+			head->data = value;
+		}
+		else if (!tail)
+		{
+			tail = new Manip();
+			tail->data = value;
+			head->next = tail;
+		}
+		else
+		{
+			tail->next = new Manip();
+			tail->next->data = value;
+			tail = tail->next;
+		}
+		count++;
+	}
+
+	void NewMan(Manip* node)
+	{
+		if (!head)
+		{
+			head = node;
+		}
+		else if (!tail)
+		{
+			tail = node;
+			head->next = tail;
+		}
+		else
+		{
+			tail->next = node;
+			tail = tail->next;
+		}
+		count++;
+	}
+
+	void Ins(double by_num, double value)
+	{
+		Manip* insertance;
+		for (Manip* next = head; next; next = next->next)
+		{
+			if (next->data < by_num)
+			{
+				insertance = new Manip();
+				insertance->data = value;
+				insertance->next = next->next;
+				next->next = insertance;
+				next = next->next;
+				count++;
+			}
+		}
+	}
+
+	void Rem(double minVal, double maxVal)
+	{
+		if (head)
+		{
+			Manip* save;
+			while (head && head->data >= minVal && head->data <= maxVal)
+			{
+				save = head->next;
+				delete head;
+				head = save;
+				if (head == tail)
+					tail = nullptr;
+				count--;
+			}
+			for (Manip* next = head; next; next = next->next)
+			{
+				while (next->next && next->next->data >= minVal && next->next->data <= maxVal)
+				{
+					save = next->next->next;
+					delete next->next;
+					next->next = save;
+					count--;
+				}
+			}
+		}
+	}
+
+	static void integrate(Adding& queue1, Adding& queue2)
+	{
+		if (queue1.head != queue2.head)
+		{
+			Adding queue;
+			while (queue1.head && queue2.head)
+			{
+				if (queue1.head->data < queue2.head->data)
+				{
+					queue.NewMan(queue1.head);
+					queue1.head = queue1.head->next;
+				}
+				else
+				{
+					queue.NewMan(queue2.head);
+					queue2.head = queue2.head->next;
+				}
+			}
+			if (!queue1.head)
+			{
+				while (queue2.head)
+				{
+					queue.NewMan(queue2.head);
+					queue2.head = queue2.head->next;
+				}
+			}
+			else if (!queue2.head)
+			{
+				while (queue1.head)
+				{
+					queue.NewMan(queue1.head);
+					queue1.head = queue1.head->next;
+				}
+			}
+			queue1.head = queue.head;
+			queue2.head = queue.head;
+		}
+	}
+
+	void sort_ascendinG()
+	{
+		if (tail)
+			for (size_t i = 0; i < count; i++)
+			{
+				for (Manip* next = head; next; next = next->next)
+				{
+					if (next->next && next->data > next->next->data)
+						std::swap(next->data, next->next->data);
+				}
+			}
+	}
+
+	void show()
+	{
+		if (head)
+		{
+			for (Manip* next = head; next; next = next->next)
+			{
+				std::cout << std::setw(5) << next->data << " ";
+			}
+			std::cout << std::endl;
+		}
+		else std::cout << "NULL" << std::endl;
+	}
+};
+
+void task3()
+{
+	Manip* head = nullptr, * tail = nullptr;
+	size_t count = 0;
+
+	Adding fadd, sadd;
+	fadd.New(5);
+	fadd.New(12);
+	fadd.New(-9);
+	fadd.sort_ascendinG();
+	cout << "Первая очередь: ";
+	fadd.show();
+	sadd.New(1);
+	sadd.New(0);
+	sadd.New(-6);
+	sadd.sort_ascendinG();
+	cout << "Вторая очередь: ";
+	sadd.show();
+	Adding::integrate(fadd, sadd);
+	cout << "Измененная: ";
+	fadd.show();
+	cout << "Указатель: Начало -  " << fadd.head  << "\tКонец - " << fadd.tail;
+}
+
 int main()
 {
 	setlocale(0, "");
 	int task;
-	cout << "Выберите задание (доступны 1, 2): ";
+	cout << "Выберите задание (доступны 1, 2, 3): ";
 	cin >> task;
+	cout << endl;
 	switch (task)
 	{
 	case 1:
@@ -139,9 +328,9 @@ int main()
 	case 2:
 		task2();
 		break;
-		/*case 3:
-			task3();
-			break;*/
+	case 3:
+		task3();
+		break;
 	}
 	return 0;
 }
